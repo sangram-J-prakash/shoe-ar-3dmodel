@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>3D Model Implementation</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="demo-styles.css" />
+    <script src="https://unpkg.com/focus-visible@5.0.2/dist/focus-visible.js" defer></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  </head>
+  <body>
+    <div id="card">
+      <model-viewer
+        id="shoe"
+        camera-controls
+        disable-zoom
+        touch-action="pan-y"
+        src="https://cdn.glitch.global/315c22e9-cfa8-4e7f-baa8-76340458f297/basketball_shoe.glb?v=1721323337932"
+        ios-src="https://cdn.glitch.global/315c22e9-cfa8-4e7f-baa8-76340458f297/Basketball_Shoe.usdz?v=1721323558588"
+        poster="https://cdn.glitch.global/315c22e9-cfa8-4e7f-baa8-76340458f297/Screenshot_2024-07-18_225825-removebg-preview.png?v=1721323818974"
+        tone-mapping="neutral"
+        ar
+        ar-modes="scene-viewer webxr quick-look"
+        alt="A 3D model of a Shoe"
+        shadow-intensity="2"
+        auto-rotate
+        
+      >
+        <div class="controls">
+          <div>
+            Variant:
+            <select id="variant"></select>
+          </div>
+          <div id="color-controls">
+            <div class="color-point" data-color="#ff0000" style="background-color: #ff0000"></div>
+            <div class="color-point" data-color="#00ff00" style="background-color: #00ff00"></div>
+            <div class="color-point" data-color="#0000ff" style="background-color: #0000ff"></div>
+          </div>
+          <div class="logo">
+            <img src="logofile.png" alt="Logo">
+          </div>
+      </model-viewer>
+    </div>
+    <script>
+      // Variant selection logic
+      const modelViewer = document.querySelector("model-viewer#shoe");
+      const select = document.querySelector("#variant");
+
+      modelViewer.addEventListener("load", () => {
+        const names = modelViewer.availableVariants;
+        for (const name of names) {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          select.appendChild(option);
+        }
+        const option = document.createElement("option");
+        option.value = "default";
+        option.textContent = "Default";
+        select.appendChild(option);
+      });
+
+      select.addEventListener("input", (event) => {
+        modelViewer.variantName =
+          event.target.value === "default" ? null : event.target.value;
+      });
+
+      // Color changing logic
+      document.querySelector('#color-controls').addEventListener('click', (event) => {
+        if (event.target.classList.contains('color-point')) {
+          const colorString = event.target.dataset.color;
+          const [material] = modelViewer.model.materials;
+          material.pbrMetallicRoughness.setBaseColorFactor(colorString);
+        }
+      });
+
+      // Show dimensions logic
+      document.querySelector('#show-dimensions').addEventListener('click', () => {
+        const dimensions = document.querySelector('#dimensions');
+        dimensions.classList.toggle('hidden');
+      });
+
+      // Show dimensions on shoe click
+      modelViewer.addEventListener('click', (event) => {
+        const dimensions = document.querySelector('#dimensions');
+        dimensions.classList.toggle('hidden');
+      });
+    </script>
+  </body>
+</html>

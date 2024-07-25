@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>3D Model Implementation</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="demo-styles.css" />
+    <script src="https://unpkg.com/focus-visible@5.0.2/dist/focus-visible.js" defer></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  </head>
+  <body>
+    <div id="background"></div>
+    <div id="card">
+      <model-viewer
+        id="shoe"
+        camera-controls
+        touch-action="pan-y"
+        src="https://cdn.glitch.global/315c22e9-cfa8-4e7f-baa8-76340458f297/basketball_shoe.glb?v=1721323337932"
+        ios-src="https://cdn.glitch.global/315c22e9-cfa8-4e7f-baa8-76340458f297/Basketball_Shoe.usdz?v=1721323558588"
+        poster="https://cdn.glitch.global/315c22e9-cfa8-4e7f-baa8-76340458f297/Screenshot_2024-07-18_225825-removebg-preview.png?v=1721323818974"
+        tone-mapping="neutral"
+        ar
+        ar-modes="scene-viewer webxr quick-look"
+        alt="A 3D model of a Shoe"
+        shadow-intensity="2"
+        auto-rotate
+        
+      >
+        <div class="controls">
+          <div id="color-controls">
+            <div class="color-point" data-color="#ff0000" style="background-color: #ff0000"></div>
+            <div class="color-point" data-color="#00ff00" style="background-color: #00ff00"></div>
+            <div class="color-point" data-color="#0000ff" style="background-color: #0000ff"></div>
+          </div>
+        </div>
+      </model-viewer>
+      <div id="dimensions" class="hidden">
+        <p>Breadth: 10 cm</p>
+        <p>Width: 25 cm</p>
+        <p>Height: 15 cm</p>
+        <p>UK Sizes:</p>
+        <select id="uk-sizes">
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+        </select>
+      </div>
+    </div>
+    <script>
+      // Color changing logic
+      document.querySelector('#color-controls').addEventListener('click', (event) => {
+        if (event.target.classList.contains('color-point')) {
+          const colorString = event.target.dataset.color;
+          const [material] = modelViewer.model.materials;
+          material.pbrMetallicRoughness.setBaseColorFactor(colorString);
+        }
+      });
+
+      // Show dimensions on click
+      const modelViewer = document.querySelector("model-viewer#shoe");
+      modelViewer.addEventListener('click', (event) => {
+        const dimensions = document.querySelector('#dimensions');
+        dimensions.classList.remove('hidden');
+
+        // Position the dimensions near the click location
+        const rect = modelViewer.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        dimensions.style.left = `${x}px`;
+        dimensions.style.top = `${y}px`;
+        dimensions.style.position = 'absolute';
+      });
+    </script>
+  </body>
+</html>
